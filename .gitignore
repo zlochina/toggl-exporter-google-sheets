@@ -1,5 +1,6 @@
 *.pyc
 __pycache__/
-*.xlsx
 .venv/
 config.ini
+credentials.json
+token.json
