@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "toggl-exporter"
+version = "0.1.0"
+description = "Project for exporting time entries once a day to Google Spreadsheet"
+authors = ["Vladyslav Zlochevskyi <zlochvla@fel.cvut.cz>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
