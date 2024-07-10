@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "toggl-exporter"
 version = "0.1.0"
-description = "Project for exporting time entries once a day to Google Spreadsheet"
+description = "Project for exporting time entries from Toggl Track to Google Spreadsheets"
 authors = ["Vladyslav Zlochevskyi <zlochvla@fel.cvut.cz>"]
 license = "MIT"
 readme = "README.md"
