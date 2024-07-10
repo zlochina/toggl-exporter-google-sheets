@@ -11,7 +11,7 @@ SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 
 
 def load_google_config(config):
-    return config["Google"]["spreadsheet_id"]
+    return config["Google"]["spreadsheet_id"], config["Google"]["range"]
 
 
 def get_google_sheets_service():
@@ -35,25 +35,50 @@ def export_to_google_sheets(data, spreadsheet_id, range_name):
         service = get_google_sheets_service()
         sheet = service.spreadsheets()
 
-        # Clear existing content
-        sheet.values().clear(spreadsheetId=spreadsheet_id, range=range_name).execute()
-
-        # Prepare the data with headers
-        values = [
-            ["Date", "Time (Finished at)", "Duration(Hours)", "Task", "Description"]
-        ] + data
-
-        body = {"values": values}
+        # First, get the current data in the sheet
         result = (
-            sheet.values()
-            .update(
+            sheet.values().get(spreadsheetId=spreadsheet_id, range=range_name).execute()
+        )
+        current_values = result.get("values", [])
+
+        # If the sheet is empty, add headers
+        if not current_values:
+            headers = [
+                "Date",
+                "Time (Finished at)",
+                "Duration(Hours)",
+                "Task",
+                "Description",
+            ]
+            sheet.values().append(
                 spreadsheetId=spreadsheet_id,
                 range=range_name,
                 valueInputOption="USER_ENTERED",
-                body=body,
+                body={"values": [headers]},
+            ).execute()
+
+        # Prepare the new data
+        new_values = []
+        for row in data:
+            # Check if this row already exists in the sheet
+            if row not in current_values:
+                new_values.append(row)
+
+        if new_values:
+            # Append only new rows
+            result = (
+                sheet.values()
+                .append(
+                    spreadsheetId=spreadsheet_id,
+                    range=range_name,
+                    valueInputOption="USER_ENTERED",
+                    body={"values": new_values},
+                )
+                .execute()
             )
-            .execute()
-        )
-        print(f"{result.get('updatedCells')} cells updated.")
+            print(f"{result.get('updates').get('updatedRows')} rows appended.")
+        else:
+            print("No new data to append.")
+
     except HttpError as error:
         print(f"An error occurred: {error}")
