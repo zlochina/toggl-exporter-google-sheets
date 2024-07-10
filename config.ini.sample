@@ -1,6 +1,6 @@
 [Toggl]
 api_token = your_api_token_here
-workspace_id = your_workspace_id_here
 
 [Google]
 spreadsheet_id = your_google_spreadsheet_id_here
+range = 'Time Entries'!A:E
