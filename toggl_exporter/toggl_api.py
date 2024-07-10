@@ -23,7 +23,7 @@ def get_time_entries(api_token, start_date, end_date):
 
 def process_time_entries(time_entries, timezone_offset):
     processed_entries = []
-    for entry in time_entries:
+    for entry in time_entries[::-1]:
         # start_time = datetime.fromisoformat(entry["start"].replace("Z", "+00:00"))
         end_time = None
         if entry["stop"] is None:
