@@ -4,3 +4,6 @@ api_token = your_api_token_here
 [Google]
 spreadsheet_id = your_google_spreadsheet_id_here
 range = 'Time Entries'!A:E
+
+[General]
+timezone_offset = -4
