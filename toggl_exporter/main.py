@@ -12,22 +12,25 @@ def load_config():
     return config
 
 
+def load_general_config(config):
+    return config["General"]
+
+
 def main():
     config = load_config()
-    api_token, workspace_id = load_toggl_config(config)
-    spreadsheet_id = load_google_config(config)
+    api_token = load_toggl_config(config)
+    spreadsheet_id, range_name = load_google_config(config)
+    timezone_offset = load_general_config(config).getint("timezone_offset")
 
     end_date = datetime.now()
     start_date = end_date - timedelta(days=1)
 
-    start_date_str = start_date.strftime("%Y-%m-%dT%H:%M:%S+00:00")
-    end_date_str = end_date.strftime("%Y-%m-%dT%H:%M:%S+00:00")
+    start_date_str = start_date.strftime("%Y-%m-%dT%H:%M:%SZ")
+    end_date_str = end_date.strftime("%Y-%m-%dT%H:%M:%SZ")
 
     try:
         time_entries = get_time_entries(api_token, start_date_str, end_date_str)
-        processed_entries = process_time_entries(time_entries)
-
-        range_name = "Sheet1!A1"
+        processed_entries = process_time_entries(time_entries, timezone_offset)
 
         export_to_google_sheets(processed_entries, spreadsheet_id, range_name)
     except Exception as e:
